@@ -1,7 +1,7 @@
-package ds.singlylinkedlist;
+package ds.circularlinkedlist;
 
 public class Node {
-	int data;
+	public int data;
 	public Node next;
 	
 	public void displayNode() {
