@@ -1,40 +1,52 @@
 package ds.graph;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-public class Graph {
-	private ArrayList[] adjacents;
-	private int vCount;
-	private int eCount;
-	public Graph(int vCount) {
-		this.vCount = vCount;
-		this.eCount = 0;
-		adjacents = new ArrayList[vCount];
+public class Graph<T> {
+	private Map<T, Node<T>> adjacencyList;
+
+    public Graph() {
+        adjacencyList = new HashMap<>();
+    }
+	
+	public boolean containsVertex(T vertex) {
+		return adjacencyList.containsKey(vertex);
+	}
+	
+	public boolean addVertex(T vertex) {
+		if (this.containsVertex(vertex))
+			return false;
 		
-		for (int i=0; i<vCount; i++)
-			adjacents[i]=new ArrayList<Integer>();
+		adjacencyList.put(vertex, new Node<>(vertex));
+		return true;
 	}
 	
-	public int getVertexCount() {
-		return this.vCount;
+	public boolean addEdge(T vertex1, T vertex2) {
+		return addEdge(vertex1, vertex2, 0);
 	}
 	
-	public int getEdgeCount() {
-		return this.eCount;
+	public boolean addEdge(T vertex1, T vertex2, int weight) {
+		if (!this.containsVertex(vertex1) || !this.containsVertex(vertex2))
+			throw new RuntimeException("Vertex does not exist!");
+		
+		Node<T> nodeA = new Node<T>(vertex1);
+		Node<T> nodeB = new Node<T>(vertex1);
+		
+		return nodeA.addEdge(nodeB, weight);
 	}
 	
-	public void addEdge(int source, int destination) {
-		adjacents[source].add(destination);
-		eCount++;
+	public Node<T> getNode(T value){
+		return adjacencyList.get(value);
 	}
 	
-	public ArrayList<int[]> adj(int source) {
-		return adjacents[source];
-	}
-	
-	public void printAdjacents(int source) {
-		System.out.println("------- Adjacents of "+source+"--------\n");
-		for(int i=0; i<adjacents[source].size(); i++)
-			System.out.println(adjacents[source].toArray()[i]);
+	public void printGraph() {
+		for (Entry<T, Node<T>> cursor : this.adjacencyList.entrySet()) {
+			System.out.println(cursor.getKey());
+			for (Edge<T> edge: cursor.getValue().getEdges()) {
+				System.out.println(edge.fromNode().getValue() + " -> " + edge.toNode().getValue());
+			}
+		}
 	}
 }
